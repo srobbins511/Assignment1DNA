@@ -7,12 +7,16 @@ using namespace std;
 
 int main(int argc, char** argv)
 {
+    //initialize and declare variables that will be used throughout the program
     const double PI = 3.1415926535897;
     string ans = "";
     bool quit = true;
     int prgCount = 0;
+
+    //the whole program lies in a do while loop so that adding additional files is simple
     do
     {
+        //initialize the variables that will be used for each file to store and manipulate the data
         std::string line = "";
         std::string content = "";
         int count = 0;
@@ -23,11 +27,16 @@ int main(int argc, char** argv)
         double probNucleo = 0;
         double progBigram = 0;
 
+        //check to see what iteration of the loop the program is on
+        //this is to insure the file being read from is the correct file
+        //whether it is the one from the command line or one entered by the user later
         if(prgCount == 0)
         {
             ans = argv[1];
         }
         ifstream myFile(ans);
+
+        //check to see if the file has been opened successfully
         if(myFile.is_open())
         {
             
@@ -40,7 +49,11 @@ int main(int argc, char** argv)
             }
             myFile.close();
         }
-
+        else
+        {
+            //if File could not be opened inform the user through the console
+            cout << "File Not Found" << endl;
+        }
 
     //Compute the sum of the DNA lines based on the size of the strings - the number of markers placed between them
         sum = content.length()-count;
@@ -49,7 +62,7 @@ int main(int argc, char** argv)
         mean = sum/(count-1);
 
     //Compute the variance and the probabilities
-
+        //initialize additional variables for use in finding the variance and probabilities
         int number = 0;
         double counter = 0;
         double aCount = 0;
@@ -84,6 +97,10 @@ int main(int argc, char** argv)
         double sum2 = 0;
         char tempChar = '0';
         string buffer = "";
+
+        //loop through the contents of the file looking at each character
+        //As this is done check to see where the ends of lines are and the size of said lines to calculate the variance
+        //after one iteration store the characeter checked in the iteration for use in the next iteration to find the probability of bigrams
         for(char w: content)
         {
             if( w == '|' && number !=0)
@@ -169,14 +186,14 @@ int main(int argc, char** argv)
                 number++;
             }
         }
+        //compute the variance based on data gathered and stored in the above loop
         varriance = sum2/counter;
 
-    //compute the standard Deviation
+    //compute the standard Deviation based on the variance
         stdDev = sqrt(sum2/counter);
-
-    //compute the gaussian distribution
         
     //print out the sum, variance, mean, standard distribution to the output file
+    //Also check the program file to see if the program should overwrite the output file or just append it
         ofstream outFile;
         if(prgCount !=0)
         {
@@ -189,6 +206,8 @@ int main(int argc, char** argv)
 
         if(prgCount == 0)
         {
+            //check the program counter to see if basic identification 
+            //should be put at the top of the output file or if iit is not needed
             outFile << "Name: Sean Robbins" << endl << "ID: 2328696" << endl << "Email: srobbins@chapman.edu" << endl;
             outFile << "CPSC350 Section 1 " << endl << endl;
         }
@@ -229,7 +248,8 @@ int main(int argc, char** argv)
         outFile << "    GC: " << gcCount/sum <<endl;
         outFile << "    GG: " << ggCount/sum <<endl;
 
-        
+        //compute the gaussian distribution
+        //then print out the DNA lines based on the gausian distribution
         for (int i=0; i<1000; ++i)
         {
             double randA = rand()/(double)RAND_MAX;
@@ -261,10 +281,13 @@ int main(int argc, char** argv)
         }
         outFile.close();
 
+        //check to see if the user wants to scan an additional file
         cout << "Do you want to scan an additional file Y or N: " << endl;
         cin >> ans;
         if(ans == "Y"||ans == "y")
         {
+            //if yes prompt the user to enter that file name
+            //then increment the program counter and set the quit variable to false to keep from exiting the loop
             cout << "enter the file name: " << endl;
             cin >> ans;
             prgCount++;
